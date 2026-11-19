@@ -12,9 +12,11 @@ rebalancing and with a classical oversampler (SMOTE)?
 ids-project/
 ├── src/                 reusable code (imported by the notebooks)
 │   ├── config.py        paths, seeds, dataset metadata
-│   └── data_io.py       step 0: download + CSV -> Parquet conversion
+│   ├── data_io.py       step 0: download + CSV -> Parquet conversion
+│   └── eda.py           step 1: streamed audit, duplicates, time checks
 ├── notebooks/           one notebook per pipeline step, run in order
-│   └── 00_setup_and_data_acquisition.ipynb
+│   ├── 00_setup_and_data_acquisition.ipynb
+│   └── 01_eda.ipynb
 ├── docs/                proposal and design notes
 ├── reports/step_reports one short write-up per step (goal / method / results / decisions)
 ├── results/             small tables and figures used in the report (committed)
@@ -26,8 +28,8 @@ ids-project/
 
 | Step | Notebook | Status |
 |---|---|---|
-| 0. Setup and data acquisition | `00_setup_and_data_acquisition.ipynb` | in progress |
-| 1. Exploratory data analysis | `01_eda.ipynb` | to do |
+| 0. Setup and data acquisition | `00_setup_and_data_acquisition.ipynb` | done |
+| 1. Exploratory data analysis | `01_eda.ipynb` | in progress |
 | 2. Preprocessing and time-aware split | `02_preprocessing.ipynb` | to do |
 | 3. Feature selection | `03_feature_selection.ipynb` | to do |
 | 4. Vanilla GAN augmentation | `04_gan.ipynb` | to do |

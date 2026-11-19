@@ -18,10 +18,21 @@ format (Parquet), without taking any cleaning decision yet. Produce a first inve
 Google Colab (CPU), Google Drive, pandas, PyArrow (Parquet, zstd compression).
 
 ## Results
-_Fill in after running notebook 00 on Colab._
-- Total flows: ___ · Benign share: ___ % · Rarest class: ___ (___ flows)
-- Header lines removed per file: ___
+Full run on Colab (all 10 days):
+- **16,232,943 flows**, of which 13,484,708 are Benign (**83.07%**); 14 attack labels.
+- Rarest classes: SQL Injection **87** flows, Brute Force-XSS 230, Brute Force-Web 611,
+  DDoS LOIC-UDP 1,730. The Benign : SQL Injection ratio is **≈ 155,000 : 1**.
+- Repeated header lines removed: 1 (16/02), 33 (28/02), 25 (01/03). No unparseable timestamps.
 - Figure: `results/figures/00_class_distribution.png` · Tables: `results/tables/inventory_*.csv`
+
+### Data-quality findings from the inventory
+| Finding | Evidence |
+|---|---|
+| **Excel truncation** | 7 of 10 files have exactly 1,048,575 flows + 1 header = 1,048,576 lines, which is Excel's row limit. Part of those days is missing. |
+| Invalid timestamps | First timestamp of 14/02 is 1970-01-05 and of 22/02 is 1970-01-10 (Unix-epoch values). |
+| 12-hour clock suspected | Every day runs from 01:00 to 12:59. To be tested in EDA against the official schedule. |
+| Documented attack missing | DDoS LOIC-UDP is documented on 20/02 (13:13–13:32) but has 0 flows in that file; it appears only on 21/02. |
+| Spelling of labels | `Infilteration` (sic), `DDOS` vs `DDoS`. |
 
 ### Observations from the local test (01/03 file, verified)
 | Observation | Consequence for later steps |

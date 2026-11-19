@@ -87,6 +87,38 @@ DAY_FILES = {
     "2018-03-02": ("Friday-02-03-2018_TrafficForML_CICFlowMeter.csv", ["Bot"]),
 }
 
+# Official attack schedule (dataset page, "Table 2"), local wall-clock time,
+# no time zone stated by the authors. Used in the EDA to check the timestamps.
+# (label as written in the CSVs, day, start, end)
+DOCUMENTED_ATTACK_WINDOWS = [
+    ("FTP-BruteForce",           "2018-02-14", "10:32", "12:09"),
+    ("SSH-Bruteforce",           "2018-02-14", "14:01", "15:31"),
+    ("DoS attacks-GoldenEye",    "2018-02-15", "09:26", "10:09"),
+    ("DoS attacks-Slowloris",    "2018-02-15", "10:59", "11:40"),
+    ("DoS attacks-SlowHTTPTest", "2018-02-16", "10:12", "11:08"),
+    ("DoS attacks-Hulk",         "2018-02-16", "13:45", "14:19"),
+    ("DDoS attacks-LOIC-HTTP",   "2018-02-20", "10:12", "11:17"),
+    ("DDOS attack-LOIC-UDP",     "2018-02-20", "13:13", "13:32"),
+    ("DDOS attack-LOIC-UDP",     "2018-02-21", "10:09", "10:43"),
+    ("DDOS attack-HOIC",         "2018-02-21", "14:05", "15:05"),
+    ("Brute Force -Web",         "2018-02-22", "10:17", "11:24"),
+    ("Brute Force -XSS",         "2018-02-22", "13:50", "14:29"),
+    ("SQL Injection",            "2018-02-22", "16:15", "16:29"),
+    ("Brute Force -Web",         "2018-02-23", "10:03", "11:03"),
+    ("Brute Force -XSS",         "2018-02-23", "13:00", "14:10"),
+    ("SQL Injection",            "2018-02-23", "15:05", "15:18"),
+    ("Infilteration",            "2018-02-28", "10:50", "12:05"),
+    ("Infilteration",            "2018-02-28", "13:42", "14:40"),
+    ("Infilteration",            "2018-03-01", "09:57", "10:55"),
+    ("Infilteration",            "2018-03-01", "14:00", "15:37"),
+    ("Bot",                      "2018-03-02", "10:11", "11:34"),
+    ("Bot",                      "2018-03-02", "14:24", "15:55"),
+]
+
+# Excel's maximum number of rows (including the header line). A CSV with
+# exactly this many lines was very likely saved through Excel and truncated.
+EXCEL_MAX_ROWS = 1_048_576
+
 # Columns that identify hosts/connections rather than describe behaviour.
 # They only exist in the 2018-02-20 file. We drop them because:
 #   1. schema consistency with the 9 other files;

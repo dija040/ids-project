@@ -32,7 +32,7 @@ ids-project/
 |---|---|---|
 | 0. Setup and data acquisition | `00_setup_and_data_acquisition.ipynb` | done |
 | 1. Exploratory data analysis | `01_eda.ipynb` | done |
-| 2. Preprocessing and time-aware split | `02_preprocessing.ipynb` | in progress |
+| 2. Preprocessing and time-aware split | `02_preprocessing.ipynb` | done |
 | 3. Feature selection | `03_feature_selection.ipynb` | to do |
 | 4. Vanilla GAN augmentation | `04_gan.ipynb` | to do |
 | 5. IDS models and tuning | `05_models.ipynb` | to do |

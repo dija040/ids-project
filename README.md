@@ -13,10 +13,12 @@ ids-project/
 ├── src/                 reusable code (imported by the notebooks)
 │   ├── config.py        paths, seeds, dataset metadata
 │   ├── data_io.py       step 0: download + CSV -> Parquet conversion
-│   └── eda.py           step 1: streamed audit, duplicates, time checks
+│   ├── eda.py           step 1: streamed audit, duplicates, time checks
+│   └── preprocess.py    step 2: cleaning, dedup, time-aware split
 ├── notebooks/           one notebook per pipeline step, run in order
 │   ├── 00_setup_and_data_acquisition.ipynb
-│   └── 01_eda.ipynb
+│   ├── 01_eda.ipynb
+│   └── 02_preprocessing.ipynb
 ├── docs/                proposal and design notes
 ├── reports/step_reports one short write-up per step (goal / method / results / decisions)
 ├── results/             small tables and figures used in the report (committed)
@@ -29,8 +31,8 @@ ids-project/
 | Step | Notebook | Status |
 |---|---|---|
 | 0. Setup and data acquisition | `00_setup_and_data_acquisition.ipynb` | done |
-| 1. Exploratory data analysis | `01_eda.ipynb` | in progress |
-| 2. Preprocessing and time-aware split | `02_preprocessing.ipynb` | to do |
+| 1. Exploratory data analysis | `01_eda.ipynb` | done |
+| 2. Preprocessing and time-aware split | `02_preprocessing.ipynb` | in progress |
 | 3. Feature selection | `03_feature_selection.ipynb` | to do |
 | 4. Vanilla GAN augmentation | `04_gan.ipynb` | to do |
 | 5. IDS models and tuning | `05_models.ipynb` | to do |

@@ -51,6 +51,9 @@ INTERIM_DIR = DATA_DIR / "interim"        # lossless Parquet copy of the raw CSV
 PROCESSED_DIR = DATA_DIR / "processed"    # cleaned, split, feature-selected data
 AUGMENTED_DIR = DATA_DIR / "augmented"    # training sets with synthetic samples
 MODELS_DIR = DATA_DIR / "models"          # trained GANs and IDS models (can be large)
+# Scratch space for large intermediate files that are rebuilt on demand. On Colab
+# it points to the temporary local disk, to spare the Google Drive quota.
+TMP_DIR = Path(os.environ.get("IDS_TMP_DIR", DATA_DIR / "tmp"))
 
 # results/ is committed: small tables and figures used in the report.
 RESULTS_DIR = PROJECT_ROOT / "results"
@@ -60,7 +63,7 @@ TABLES_DIR = RESULTS_DIR / "tables"
 
 def ensure_dirs() -> None:
     for d in (RAW_DIR, INTERIM_DIR, PROCESSED_DIR, AUGMENTED_DIR, MODELS_DIR,
-              FIGURES_DIR, TABLES_DIR):
+              TMP_DIR, FIGURES_DIR, TABLES_DIR):
         d.mkdir(parents=True, exist_ok=True)
 
 
@@ -154,3 +157,58 @@ FEATURE_COLUMNS = [
     "Active Min", "Idle Mean", "Idle Std", "Idle Max", "Idle Min",
 ]
 assert len(FEATURE_COLUMNS) == 78
+
+
+# ---------------------------------------------------------------------------
+# Step 2 - preprocessing decisions (justified in notebooks/02_preprocessing.ipynb)
+# ---------------------------------------------------------------------------
+# D4: features with a single value over all 16.2 M flows (EDA step 1, section 4).
+CONSTANT_FEATURES = [
+    "Bwd PSH Flags", "Bwd URG Flags", "Fwd Byts/b Avg", "Fwd Pkts/b Avg",
+    "Fwd Blk Rate Avg", "Bwd Byts/b Avg", "Bwd Pkts/b Avg", "Bwd Blk Rate Avg",
+]
+MODEL_FEATURES = [c for c in FEATURE_COLUMNS if c not in CONSTANT_FEATURES]  # 70
+
+# Time-valued features, in microseconds. None of them can be negative, and the
+# inter-arrival times (IAT) cannot exceed the flow timeout used by CICFlowMeter.
+TIME_FEATURES = [c for c in FEATURE_COLUMNS
+                 if c == "Flow Duration" or "IAT" in c or c.startswith(("Active", "Idle"))]
+IAT_FEATURES = [c for c in FEATURE_COLUMNS if "IAT" in c]
+FLOW_TIMEOUT_US = 120_000_000   # 120 s: the maximum Flow Duration observed in the data
+
+# D1: the capture ran 08:00-17:59, written on a 12-hour clock without AM/PM.
+# Hours 01-07 are therefore afternoon hours (13-19); 06-07 never occur.
+PM_HOURS = range(1, 8)
+
+# Clean, consistent class names (the official labels have typos and mixed case).
+LABEL_CANONICAL = {
+    "Benign": "Benign",
+    "FTP-BruteForce": "BruteForce-FTP",
+    "SSH-Bruteforce": "BruteForce-SSH",
+    "DoS attacks-GoldenEye": "DoS-GoldenEye",
+    "DoS attacks-Slowloris": "DoS-Slowloris",
+    "DoS attacks-SlowHTTPTest": "DoS-SlowHTTPTest",
+    "DoS attacks-Hulk": "DoS-Hulk",
+    "DDoS attacks-LOIC-HTTP": "DDoS-LOIC-HTTP",
+    "DDOS attack-LOIC-UDP": "DDoS-LOIC-UDP",
+    "DDOS attack-HOIC": "DDoS-HOIC",
+    "Brute Force -Web": "Web-BruteForce",
+    "Brute Force -XSS": "Web-XSS",
+    "SQL Injection": "Web-SQLi",
+    "Infilteration": "Infiltration",
+    "Bot": "Bot",
+}
+LABELS = list(LABEL_CANONICAL.values())        # 15 fine-grained classes
+
+# Main classification target: 7 attack families (decision "labels = families").
+LABEL_FAMILY = {lab: lab.split("-")[0] for lab in LABELS}
+FAMILIES = ["Benign", "DoS", "DDoS", "BruteForce", "Web", "Bot", "Infiltration"]
+assert set(LABEL_FAMILY.values()) == set(FAMILIES)
+
+# D6: chronological split inside every (day, class) group.
+SPLIT_FRACTIONS = (0.70, 0.15, 0.15)            # train / validation / test
+SPLITS = ("train", "val", "test")
+
+# D7: Benign is downsampled in the TRAINING split only (val/test keep the real
+# class proportions, so that precision and false-alarm rate stay realistic).
+TRAIN_BENIGN_CAP = 1_000_000

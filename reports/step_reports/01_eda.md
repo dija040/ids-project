@@ -20,8 +20,8 @@ pandas, PyArrow, NumPy, matplotlib, seaborn.
 | # | Finding | Evidence |
 |---|---|---|
 | 1 | Excel truncation | **7 / 10 files** have exactly 1,048,576 CSV lines (Excel's row limit): 14/02, 15/02, 16/02, 21/02, 22/02, 23/02, 02/03. |
-| 2 | Invalid timestamps | Timestamps from 1970 on 14/02 and 22/02 (count in `bad_timestamps`, notebook §6). |
-| 3 | **12-hour clock: confirmed** | Every afternoon attack appears exactly 12 h earlier: SSH-Bruteforce documented 14:01–15:31, observed 02:01–03:32; DoS-Hulk 13:45 → 01:45; DDoS-HOIC 14:05 → 02:11; XSS 13:50 → 01:51. Morning attacks match (FTP 10:32 → 10:33, GoldenEye 09:26 → 09:27). |
+| 2 | Invalid timestamps | **14 flows** dated 1970 (5 on 14/02, 9 on 22/02), all Benign. |
+| 3 | **12-hour clock: confirmed** | Every afternoon attack appears exactly 12 h earlier: SSH-Bruteforce documented 14:01–15:31, observed 02:01–03:32; DoS-Hulk 13:45 → 01:45; DDoS-HOIC 14:05 → 02:11; XSS 13:50 → 01:51. Morning attacks match (FTP 10:32 → 10:33, GoldenEye 09:26 → 09:27). The per-hour heatmap (`01_flows_per_hour.png`) shows traffic at hours 01–05 and 08–12 **and none at 06–07 on any day**, i.e. the capture runs 08:00–17:59 and hours 01–05 are 13:00–17:59. A label-free correction is therefore *hour 01–07 → +12 h*. |
 | 4 | NaN / inf | `Flow Byts/s`: 59,721 NaN + 36,039 +inf; `Flow Pkts/s`: 95,760 +inf, i.e. the same **95,760 flows (0.59%)**, all with zero duration. Present almost only in Benign (0.72%) and Infiltration (0.80%); ~0% in the other attacks. |
 | 5 | Negative / impossible values | ~15 flows with durations or inter-arrival times around **−9 × 10¹¹ µs**, and `Flow/Fwd IAT Max` up to **+9.8 × 10¹¹ µs** (much longer than the 120 s flow timeout): timer bugs. `Init Fwd/Bwd Win Byts = −1` in 4.4 M / 8.3 M flows is a sentinel ("not observed"), not an error. |
 | 6 | Constant features | 8: `Bwd PSH Flags`, `Bwd URG Flags`, `Fwd/Bwd Byts/b Avg`, `Fwd/Bwd Pkts/b Avg`, `Fwd/Bwd Blk Rate Avg`. |

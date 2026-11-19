@@ -14,8 +14,7 @@ ids-project/
 │   ├── config.py        paths, seeds, dataset metadata
 │   ├── data_io.py       step 0: download + CSV -> Parquet conversion
 │   ├── eda.py           step 1: streamed audit, duplicates, time checks
-│   ├── preprocess.py    step 2: cleaning, dedup, time-aware split
-│   └── publish.py       push results/ from Colab to GitHub
+│   └── preprocess.py    step 2: cleaning, dedup, time-aware split
 ├── notebooks/           one notebook per pipeline step, run in order
 │   ├── 00_setup_and_data_acquisition.ipynb
 │   ├── 01_eda.ipynb
@@ -49,20 +48,6 @@ ids-project/
    - downloads the official CSVs (~6.9 GB) to Colab's temporary disk;
    - converts them to Parquet in `MyDrive/ids-project/data/interim/` (persistent).
 3. Run the next notebooks in order.
-
-### Publishing results from Colab (one-time setup)
-The last cell of each notebook commits its tables and figures (`results/`) and pushes them to
-GitHub, so they are available on the PC (`git pull`) and in the repository. It needs a token,
-stored in Colab's Secrets (never in the code):
-
-1. GitHub → *Settings* → *Developer settings* → *Personal access tokens* → *Fine-grained tokens*
-   → *Generate new token*. Repository access: **only `ids-project`**. Permissions:
-   *Repository permissions* → **Contents: Read and write**.
-2. Colab → key icon 🔑 (*Secrets*) in the left panel → *Add new secret*: name `GITHUB_TOKEN`,
-   value = the token, and switch on *Notebook access*.
-
-Without the secret, the cell just prints these instructions and nothing else is affected.
-Only `results/` is committed; datasets are git-ignored.
 
 To run locally instead: `pip install -r requirements.txt`, then run the notebooks
 from the `notebooks/` folder.

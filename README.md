@@ -38,7 +38,7 @@ ids-project/
 
 1. Put this repository on GitHub.
 2. Open `notebooks/00_setup_and_data_acquisition.ipynb` in Colab
-   (*File → Open notebook → GitHub*), set `REPO_URL` in the first code cell, and
+   (*File → Open notebook → GitHub*) and
    run all cells. The notebook:
    - mounts Google Drive and clones the repository into `MyDrive/ids-project`;
    - downloads the official CSVs (~6.9 GB) to Colab's temporary disk;

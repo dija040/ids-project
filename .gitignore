@@ -1,0 +1,13 @@
+# Datasets and trained models are never committed (course rule: no raw data in the repo)
+data/
+*.csv
+*.parquet
+*.pt
+*.joblib
+# Python / Jupyter
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+# Exception: small result tables used in the report
+!results/tables/*.csv
